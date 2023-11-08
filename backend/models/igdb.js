@@ -33,8 +33,7 @@ class IGDB {
   };
 
   // Find game(s) by searching with provided query
-  static async searchGame(search){
-    let gameSearch = search;
+  static async searchGame(gameSearch){
     let query = `fields name,cover.id,cover.image_id; where cover.image_id != null; search "${gameSearch}";`;
 
     let res = await axios.post(BASE_API_URL + GAMES_API, query);

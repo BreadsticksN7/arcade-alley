@@ -13,6 +13,16 @@ router.get('/', async function(req, res, next){
  }
 });
 
+// GET game based on ID
+router.get('/id/:id', async function(req, res, next){
+  try{
+   const game = await IGDB.postGame(req.params.id);
+   return res.status(201).json(game);
+  } catch(err){
+   return next(err);
+  }
+});
+
 // GET games being released in the upcoming two weeks
 router.get('/upcoming', async function(req, res, next){
   try{
@@ -25,21 +35,11 @@ router.get('/upcoming', async function(req, res, next){
 });
 
 // GET search by query
-router.get('/search', async function(req, res, next){
+router.post('/search', async function(req, res, next){
   try{
-   //const games = await IGDB.searchGame();
-   //console.log(games);
-   return res.status(201).json({ res: "Testing search" });
-  } catch(err){
-   return next(err);
-  }
-});
-
-// GET game based on ID
-router.get('/:id', async function(req, res, next){
-  try{
-   const game = await IGDB.postGame(req.params.id);
-   return res.status(201).json(game);
+   const games = await IGDB.searchGame(req.body);
+   console.log(req.body);
+   return res.status(201).json({ games });
   } catch(err){
    return next(err);
   }
