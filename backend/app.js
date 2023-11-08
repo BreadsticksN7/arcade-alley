@@ -5,6 +5,7 @@
 const cors = require('cors');
 const express = require('express');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
 
 // Required middleware
 const { NotFoundError } = require('./middleware/expressError');
@@ -19,6 +20,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use(authenticateJWT);
+app.use(bodyParser.json());
 app.use('/users', userRoutes);
 app.use('/games', gameRoutes);
 

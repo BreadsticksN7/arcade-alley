@@ -1,27 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import IGDBApi from '../helpers/igdbApi';
+//import axios from 'axios';
 
+const homeUrl = process.env.REACT_APP_FETCH_URL;
 
 function App() {
-
+  //const [games, setGames] = useState([]);
   const [games, setGames] = useState([]);
   useEffect(() => {
     search();
-  }, []);
+  },[]);
+
   async function search() {
-    let res = await IGDBApi.getUpcoming();
-    setGames(res);
-  }
+    const resp = await fetch(`http://localhost:3001/games/upcoming`);
+    const data = await resp.json();
+    setGames(data.games);
+  };
+
   return (
     <div className="App">
-      {games}
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
+        <div>
+      {games.length ? (
+        <div className='row py-sm-4 align-items-start'>
+          {games.map(g => (
+            <div>{g.name}</div>
+          ))}
+        </div>
+      ) : (
+          <div></div>
+      )}
+    </div>
+
         <a
           className="App-link"
           href="https://reactjs.org"

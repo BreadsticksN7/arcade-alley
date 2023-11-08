@@ -6,7 +6,7 @@ const { createToken } = require('../helpers/token');
 //const { ensureAdmin, ensureCorrectUserOrAdmin } = require('../middleware/auth');
 
 // POST register new user and token
-router.post('/register', async function(req, res, next){
+router.post('/account/register', async function(req, res, next){
   try{
     const user = await User.regUser(req.body);
     const token = createToken(user);
@@ -31,7 +31,7 @@ router.get('/', async function(req, res, next){
 // GET return specific user
 // Returns { username, first/last_name, isAdmin }
 // Requires admin or correct user
-router.get('/:username', async function(req, res, next){
+router.get('/member/:username', async function(req, res, next){
   try {
     const user = await User.getUser(req.params.username);
     return res.json( user );
@@ -44,7 +44,7 @@ router.get('/:username', async function(req, res, next){
 // Data can include { first/last_name, email, password }
 // Returns { username, first/last_name, email, password, isAdmin }
 // Authorization requires correct user or admin
-router.patch('/:username', async function(req, res, next){
+router.patch('/member/:username', async function(req, res, next){
   try {
     const user = await User.updateUser(req.params.username, req.body);
     return res.json({ user });
@@ -55,7 +55,7 @@ router.patch('/:username', async function(req, res, next){
 
 // DELETE specific user
 // Requires admin or correct user
-router.delete('/:username', async function(req, res, next){
+router.delete('/member/:username', async function(req, res, next){
   try {
     await User.delUser(req.params.username);
     return res.json({ deleted: req.params.username });
