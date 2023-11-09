@@ -1,51 +1,77 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
-//import axios from 'axios';
+import { Navigate, Routes, Route, BrowserRouter } from 'react-router-dom';
+import { decodeToken } from 'react-jwt';
+// CSS files
+import 'bootstrap/dist/css/bootstrap.min.css';
+// Auth components
+import useLocalStorage from './hooks/useLocalStorage';
+import loginHelper from './middleware/loginHelper';
+import UserContext from './auth/userContext';
+// Common routes
+import Home from './pages/home';
+import NavBar from './pages/navbar';
+import LoginForm from './auth/loginForm';
+// Game routes
+// User routes
 
-const homeUrl = process.env.REACT_APP_FETCH_URL;
+export const TOKEN_STORAGE_ID = 'arcade-alley';
 
 function App() {
-  //const [games, setGames] = useState([]);
-  const [games, setGames] = useState([]);
-  useEffect(() => {
-    search();
-  },[]);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
+  const [infoLoaded, setInfoLoaded] = useState(false);
 
-  async function search() {
-    const resp = await fetch(`http://localhost:3001/games/upcoming`);
-    const data = await resp.json();
-    setGames(data.games);
+  useEffect(() => {
+    async function getCurrentUser(){
+      if(token){
+        try{
+          let { username } = decodeToken(token);
+          loginHelper.token = token;
+          let currentUser = await loginHelper.getCurrentUser(username);
+          setCurrentUser(currentUser);
+        } catch(err){
+          setCurrentUser(null);
+        }
+      }
+      setInfoLoaded(true);
+    }
+    setInfoLoaded(false);
+    getCurrentUser();
+  }, [token]);
+
+  async function login(loginData){
+    try{
+      let token = await loginHelper.login(loginData);
+      setToken(token);
+      return { success: true };
+    } catch(err){
+      console.error('Login failed', err);
+      return { success: false, err };
+    }
+  };
+
+  async function logout(){
+    setCurrentUser(null);
+    setToken(null);
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
+    <div className='App'>
+      <BrowserRouter>
+      <UserContext.Provider value={{ currentUser, setCurrentUser}}>
+      <NavBar login={login} logout={logout}></NavBar>
+      <div>
         <div>
-      {games.length ? (
-        <div className='row py-sm-4 align-items-start'>
-          {games.map(g => (
-            <div>{g.name}</div>
-          ))}
-        </div>
-      ) : (
-          <div></div>
-      )}
-    </div>
+          <Routes>
+            <Route path="/" element={<Home login={login} />} />
+            <Route path="/auth/login" element={<LoginForm login={login} />} /> 
 
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+            <Route path='*' element={<Navigate to='/' replace />} />
+          </Routes>
+        </div>
+      </div>
+      </UserContext.Provider>
+      </BrowserRouter>
     </div>
   );
 }

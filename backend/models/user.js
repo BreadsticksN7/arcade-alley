@@ -13,14 +13,14 @@ class User {
   // Authenticates user with { username, password }
   // Throws unauthorized error if user isn't found or wrong password
   // Returns [{ username, first/last_name, email, is_admin }]
-  static async authenticate(){
+  static async authenticate(username, password){
     const result = await db.query(
       `SELECT username,
               password,
               first_name AS "firstName",
               last_name AS "lastName",
               email,
-              is_admin AS "isAdmin
+              is_admin AS "isAdmin"
       FROM users
       Where username = $1`,
       [username]

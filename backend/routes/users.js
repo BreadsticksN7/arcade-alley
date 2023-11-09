@@ -5,16 +5,16 @@ const User = require('../models/user');
 const { createToken } = require('../helpers/token');
 //const { ensureAdmin, ensureCorrectUserOrAdmin } = require('../middleware/auth');
 
-// POST register new user and token
-router.post('/account/register', async function(req, res, next){
-  try{
-    const user = await User.regUser(req.body);
-    const token = createToken(user);
-    return res.status(201).json({ user, token });
-  } catch(err) {
-    return next(err);
-  }
-});
+// // POST register new user and token
+// router.post('/account/register', async function(req, res, next){
+//   try{
+//     const user = await User.regUser(req.body);
+//     const token = createToken(user);
+//     return res.status(201).json({ user, token });
+//   } catch(err) {
+//     return next(err);
+//   }
+// });
 
 // GET all users
 // Returns { users: [{ username, first/last_name, email }]}

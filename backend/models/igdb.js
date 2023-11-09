@@ -8,14 +8,10 @@ const GAMES_API = '/games';
 axios.defaults.headers.common['Authorization'] = process.env.IGDB_API_AUTHORIZATION;
 axios.defaults.headers.common['Client-ID'] = process.env.IGDB_API_CLIENT_ID;
 
-// timestamps to seconds for passing into query
-let dateTime = Math.floor(Date.now() / 1000);
-
 class IGDB {
   // Displays games released in the last week
   // Date is based on timestamp provided
-  static async getLatest(){
-    let lastWeek = dateTime - 7 * 24 * 60 * 60;
+  static async getLatest(dateTime, lastWeek){
     const query = `fields first_release_date,name,cover.id,cover.image_id; where themes != (42) & status = n & category != (1,2,5,6,7) & platforms = (167,169) & first_release_date > ${lastWeek} & first_release_date < ${dateTime} & first_release_date != null & cover != null & cover.image_id != null; limit 5;`;
 
     let res = await axios.post(BASE_API_URL + GAMES_API, query);
@@ -24,8 +20,7 @@ class IGDB {
 
   // Displays games beig released in the next two weeks
   // Date is based on timestamp provided
-  static async getUpcoming(){
-   let nextWeek = dateTime + 14 * 24 * 60 * 60;
+  static async getUpcoming(dateTime, nextWeek){
     const query = `fields first_release_date,name,cover.id,cover.image_id; where themes != (42) & status = n & category != (1,2,5,6,7) & platforms = (167,169) & first_release_date > ${dateTime} & first_release_date < ${nextWeek} & first_release_date != null & cover != null & cover.image_id != null; limit 5;`;
 
     let res = await axios.post(BASE_API_URL + GAMES_API, query);
