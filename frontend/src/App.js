@@ -13,13 +13,14 @@ import NavBar from './pages/navbar';
 import LoginForm from './auth/loginForm';
 // Game routes
 // User routes
+import UserDetails from './pages/userRoutes/userDetails';
 
 export const TOKEN_STORAGE_ID = 'arcade-alley';
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
-  const [infoLoaded, setInfoLoaded] = useState(false);
+  //const [infoLoaded, setInfoLoaded] = useState(false);
 
   useEffect(() => {
     async function getCurrentUser(){
@@ -33,9 +34,9 @@ function App() {
           setCurrentUser(null);
         }
       }
-      setInfoLoaded(true);
+      //setInfoLoaded(true);
     }
-    setInfoLoaded(false);
+    //setInfoLoaded(false);
     getCurrentUser();
   }, [token]);
 
@@ -58,13 +59,14 @@ function App() {
   return (
     <div className='App'>
       <BrowserRouter>
-      <UserContext.Provider value={{ currentUser, setCurrentUser}}>
+      <UserContext.Provider value={{ currentUser, setCurrentUser }}>
       <NavBar login={login} logout={logout}></NavBar>
       <div>
         <div>
           <Routes>
-            <Route path="/" element={<Home login={login} />} />
-            <Route path="/auth/login" element={<LoginForm login={login} />} /> 
+            <Route path="/" element={<Home />} />
+            <Route path="/auth/login" element={<LoginForm login={login} />} />
+            <Route path="/users/member/:username" element={<UserDetails />} />
 
             <Route path='*' element={<Navigate to='/' replace />} />
           </Routes>

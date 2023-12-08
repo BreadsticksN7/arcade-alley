@@ -27,7 +27,7 @@ class loginHelper{
   };
 
   static async getCurrentUser(username){
-    let res = await this.requeset(`users/member/${username}`);
+    let res = await this.request(`users/member/${username}`);
     return res.user;
   }
 };

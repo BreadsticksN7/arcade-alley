@@ -34,7 +34,7 @@ router.get('/', async function(req, res, next){
 router.get('/member/:username', async function(req, res, next){
   try {
     const user = await User.getUser(req.params.username);
-    return res.json( user );
+    return res.json({ user });
   } catch(err) {
     return next(err);
   }
